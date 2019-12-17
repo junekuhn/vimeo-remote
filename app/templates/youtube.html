@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Remote Vimeo Controller</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<!--      example is in 8.0-->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        socket.on('connect', function() {
+            socket.emit('my event', {data: 'I\'m connected!'});
+        });
+        
+        socket.on('start', function() {
+            console.log('time to start');
+            document.getElementById('ytplayer').requestFullscreen();
+        });
+    </script>
+  </head>
+  <body style="background: #000;">
+<div id="ytplayer"></div>
+      <button id="view-fullscreen">Fullscreen</button>
+      <script>
+  // Load the IFrame Player API code asynchronously.
+  var tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/player_api";
+  var firstScriptTag = document.getElementsByTagName('script')[0];
+  firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+  // Replace the 'ytplayer' element with an <iframe> and
+  // YouTube player after the API code downloads.
+          
+          //to start, change autoplay from 0 to 1
+  var player,iframe;
+ var $ = document.querySelector.bind(document);
+          
+  function onYouTubePlayerAPIReady() {
+    player = new YT.Player('ytplayer', {
+      height: '360',
+      width: '640',
+      videoId: 'M7lc1UVf-VE',
+      playerVars: {
+          controls: 0,
+          disablekb: 1,
+          autoplay: 1
+      },    
+      events: {
+         'onReady': onPlayerReady
+      }
+      
+    });
+  }
+          
+    function onPlayerReady(e) {
+        console.log("triggered onplayerready");
+        var player = e.target;
+        iframe = document.getElementById('ytplayer');
+        setupListener(); 
+    }
+          
+    function setupListener (){
+    iframe.addEventListener('click', playFullscreen);
+    }
+
+    function playFullscreen (){
+      player.playVideo();//won't work on mobile
+
+      var requestFullScreen = iframe.requestFullscreen || iframe.mozRequestFullscreen || iframe.webkitRequestFullscreen;
+      if (requestFullScreen) {
+        requestFullScreen.bind(iframe)();
+      }
+    }
+          
+        var viewFullScreen = document.getElementById("view-fullscreen");
+        if (viewFullScreen) {
+          viewFullScreen.addEventListener("click", function() {
+            var docElm = document.getElementById('ytplayer');
+            if (docElm.requestFullscreen) {
+              docElm.requestFullscreen();
+            } else if (docElm.msRequestFullscreen) {
+              docElm.msRequestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+              docElm.mozRequestFullScreen();
+            } else if (docElm.webkitRequestFullScreen) {
+              docElm.webkitRequestFullScreen();
+            }
+          })
+        }
+          
+//          function onStartFullScreen(e){
+//        console.log("triggered onstart");
+//        var player = e.target;
+//        iframe = document.getElementById('ytplayer');
+////        setupListener(); 
+//        iframe.requestFullscreen();
+//    }
+</script>
+   
+  </body>
+</html>
+<!--
+
+
+issues
+
+Cannot disable pause
+cannot get it to listen to custom events
+cannot trigger fullscreen on ready
+
+-->

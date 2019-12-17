@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Remote Vimeo Controller</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+<!--      example is in 8.0-->
+    <script type="text/javascript" src="https://aframe.io/releases/0.8.0/aframe.min.js"></script>
+    <script type="application/javascript" src="{{url_for('static', filename='aframe-vimeo-component.min.js')}}"></script>
+    <script>AFRAME.registerComponent('raycastable', {});</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js" integrity="sha256-yr4fRk/GU1ehYJPAs8P4JlTgu0Hdsp4ZKrx8bDEDC3I=" crossorigin="anonymous"></script>
+    <script type="text/javascript" charset="utf-8">
+        var socket = io.connect('http://' + document.domain + ':' + location.port);
+        socket.on('connect', function() {
+            socket.emit('my event', {data: 'I\'m connected!'});
+        });
+        
+        socket.on('start', function() {
+           console.log('time to start');
+            document.getElementById('vimeo-player').emit('start');
+        });
+    </script>
+  </head>
+  <body style="background: #000;">
+
+    <a-scene>
+      <a-assets>
+        <img id="sliceImg" src="https://cdn.glitch.com/0ddef241-2c1a-4bc2-8d47-58192c718908%2Fslice.png?1557308835598" crossorigin="anonymous">
+      </a-assets>
+
+      <a-camera position="0 0 0"></a-camera>
+
+      <a-entity vimeo="id: 362333441" id="vimeo-player">
+          <a-sky color="#000" id="box"></a-sky>
+      </a-entity>
+
+
+         <!-- Mouse cursor so we can click on the scene with mouse or touch. -->
+        <a-entity camera look-controls>
+            <a-entity id="mouseCursor" cursor="rayOrigin: entity" raycaster="objects: [raycastable]; showLine: true"></a-entity>
+        </a-entity>
+
+          <a-entity oculus-go-controls laser-controls="hand: left" raycaster="objects: [raycastable]" ></a-entity>
+
+
+    </a-scene>
+    
+<!--
+     <script>
+
+      //Wait until the A-Scene component was loaded before doing anything
+      document.getElementById('vimeo-player').addEventListener('loaded', function () {
+          var vimeoElement = document.getElementById('vimeo-player');
+        var vimeoPlayer = vimeoElement.components.vimeo;
+          
+
+        //Register on box click event that triggers the player
+        vimeoElement.addEventListener('start', function () {
+          if (vimeoPlayer.player.isPlaying()) {
+            vimeoPlayer.pause();
+          } else {
+            vimeoPlayer.play();
+          }
+        });
+      });
+
+
+    </script>
+-->
+  </body>
+</html>
