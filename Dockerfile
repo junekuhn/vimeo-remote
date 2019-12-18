@@ -13,6 +13,8 @@ RUN pip3 --no-cache-dir install flask flask-socketio PyVimeo==1.0.0 uwsgi -U fla
 
 EXPOSE 5000
 
-ENTRYPOINT ["uwsgi"]
-CMD ["http.ini"]
+ENTRYPOINT ["export"]
+CMD ["FLASK_APP=app.py"]
 
+ENTRYPOINT ["flask"]
+CMD ["run"]
